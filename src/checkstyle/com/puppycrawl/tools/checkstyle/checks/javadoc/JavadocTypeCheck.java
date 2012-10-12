@@ -39,6 +39,7 @@ import org.apache.commons.beanutils.ConversionException;
  *
  * @author Oliver Burn
  * @author Michael Tamm
+ * @author gkzhong
  */
 public class JavadocTypeCheck
     extends Check
@@ -63,6 +64,11 @@ public class JavadocTypeCheck
     /** controls whether to flag errors for unknown tags. Defaults to false. */
     private boolean mAllowUnknownTags;
 
+    /**
+	 * controls whether to ignore inner class, interface, enum, annotation and the other types.
+	 */
+	private boolean mAllowIgnoreInnerType;
+	
     /**
      * Sets the scope to check.
      * @param aFrom string to set scope from
@@ -135,6 +141,15 @@ public class JavadocTypeCheck
     {
         mAllowUnknownTags = aFlag;
     }
+    
+    /**
+	 * Controls whether to ignore inner class, interface, enum, annotation and the other types. Defaults to false.
+	 * 
+	 * @param aFlag a <code>Boolean</code> value
+	 */
+	public void setAllowIgnoreInnerType(boolean aFlag) {
+		this.mAllowIgnoreInnerType = aFlag;
+	}
 
     @Override
     public int[] getDefaultTokens()
@@ -154,7 +169,7 @@ public class JavadocTypeCheck
             final FileContents contents = getFileContents();
             final int lineNo = aAST.getLineNo();
             final TextBlock cmt = contents.getJavadocBefore(lineNo);
-            if (cmt == null) {
+            if (cmt == null && (ScopeUtils.isOuterMostType(aAST) || !mAllowIgnoreInnerType)) {
                 log(lineNo, "javadoc.missing");
             }
             else if (ScopeUtils.isOuterMostType(aAST)) {
