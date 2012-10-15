@@ -332,6 +332,18 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport
         };
         verify(checkConfig, getPath("InputTypeParamsTags.java"), expected);
     }
+    
+    @Test
+    public void testAllowIgnoreInnerType() throws Exception
+    {
+        final DefaultConfiguration checkConfig =
+            createCheckConfig(JavadocTypeCheck.class);
+        checkConfig.addAttribute("allowIgnoreInnerType", "true");
+        final String[] expected = {
+            "7: Missing a Javadoc comment.",
+        };
+        verify(checkConfig, getPath("InputPublicOnly.java"), expected);
+    }
 
     @Test
     public void testBadTag() throws Exception
