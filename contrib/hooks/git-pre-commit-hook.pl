@@ -15,7 +15,7 @@
 # Now, when you commit, you will be disallowed from doing so
 # until you pass your checkstyle checks.
 
-$command = "git-diff-index --cached HEAD 2>&1 | sed 's/^:.*     //' | uniq";
+$command = "git-diff-index --cached --name-only HEAD 2>&1 | sed 's/^:.*     //' | uniq";
 open (FILES,$command . "|") || die "Cannot run '$command': $!\n";
 
 $CONFIG_CHECK_FILE = "checkstyle.checkfile";
